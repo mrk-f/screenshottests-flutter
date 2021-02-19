@@ -18,11 +18,10 @@ void main() {
 
     test('screenshot test', () async {
       // if youre running the tests locally then the path will be screenshots/filename.png
-      // if youre running the tests on codemagic then the path will be /Users/builder/exported_artefacts
-      await takeScreenshot(driver, 'Users/builder/exported_artefacts/counter_value1.png');
+      await takeScreenshot(driver, 'screenshots/counter_value1.png');
       await driver.tap(find.byValueKey('button'));
       expect(await driver.getText(find.byValueKey('count-value')), '1');
-      await takeScreenshot(driver, 'Users/builder/exported_artefacts/counter_value2.png');
+      await takeScreenshot(driver, 'screenshots/counter_value2.png');
     });
 
     tearDownAll(() async {
