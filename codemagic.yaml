@@ -1,0 +1,61 @@
+# Automatically generated on 2021-02-19 UTC from https://codemagic.io/app/602f84d5f39feed647f5ec6b/settings
+# Note that this configuration is not an exact match to UI settings. Review and adjust as necessary.
+
+workflows:
+  default-workflow:
+    name: Default Workflow
+    max_build_duration: 60
+    environment:
+      flutter: beta
+      xcode: latest
+      cocoapods: default
+    scripts:
+      - |
+        xcrun simctl shutdown all
+        TEST_DEVICE=$(xcrun simctl create test_device com.apple.CoreSimulator.SimDeviceType.iPad-Pro--12-9-inch---3rd-generation- com.apple.CoreSimulator.SimRuntime.iOS-13-0)
+        xcrun simctl boot $TEST_DEVICE
+      - |
+        # set up debug keystore
+        rm -f ~/.android/debug.keystore
+        keytool -genkeypair \
+          -alias androiddebugkey \
+          -keypass android \
+          -keystore ~/.android/debug.keystore \
+          -storepass android \
+          -dname 'CN=Android Debug,O=Android,C=US' \
+          -keyalg 'RSA' \
+          -keysize 2048 \
+          -validity 10000
+      - |
+        # set up local properties
+        echo "flutter.sdk=$HOME/programs/flutter" > "$FCI_BUILD_DIR/android/local.properties"
+      - cd . && flutter packages pub get
+      - cd . && flutter config --enable-web
+      - cd . && flutter drive --target=test_driver/app.dart
+      - cd . && flutter test
+      - |
+        set -e
+        set -x
+
+        cp  -r screenshots $FCI_EXPORT_DIR/screenshots
+      - cd . && flutter build apk --debug
+      - find . -name "Podfile" -execdir pod install \;
+      - cd . && flutter build ios --debug --no-codesign
+      - |
+        # build web
+        cd .
+        flutter build web --release
+        cd build/web
+        7z a -r ../web.zip ./*
+    artifacts:
+      - build/**/outputs/**/*.apk
+      - build/**/outputs/**/*.aab
+      - build/**/outputs/**/mapping.txt
+      - build/ios/ipa/*.ipa
+      - /tmp/xcodebuild_logs/*.log
+      - build/web.zip
+      - flutter_drive.log
+    publishing:
+      email:
+        recipients:
+          - mark@nevercode.io
