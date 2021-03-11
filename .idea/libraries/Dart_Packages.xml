@@ -170,6 +170,13 @@
             </list>
           </value>
         </entry>
+        <entry key="integration_test">
+          <value>
+            <list>
+              <option value="$USER_HOME$/Documents/flutter/packages/integration_test/lib" />
+            </list>
+          </value>
+        </entry>
         <entry key="io">
           <value>
             <list>
@@ -517,6 +524,7 @@
       <root url="file://$USER_HOME$/Documents/flutter/packages/flutter_driver/lib" />
       <root url="file://$USER_HOME$/Documents/flutter/packages/flutter_test/lib" />
       <root url="file://$USER_HOME$/Documents/flutter/packages/fuchsia_remote_debug_protocol/lib" />
+      <root url="file://$USER_HOME$/Documents/flutter/packages/integration_test/lib" />
     </CLASSES>
     <JAVADOC />
     <SOURCES />
